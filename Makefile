@@ -34,7 +34,7 @@ $(OBJ_DIR)/%.o: %.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 test-read-csv:
-	make -C $(TESTS) read-csv
+	make -C $(TESTS) test1
 
 exec-and-redirect:
 	$(EXEC) > $(OUTPUT)/current_out.txt
