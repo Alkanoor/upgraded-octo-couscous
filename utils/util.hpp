@@ -2,7 +2,7 @@
 #define UTIL_HPP_INCLUDED
 
 
-#include <ofstream>
+#include <ostream>
 #include <vector>
 #include <set>
 
@@ -27,11 +27,12 @@ unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std:
 
 //pour afficher facilement des vecteurs
 template <typename T>
-std::ofstream operator<<(std::ofstream& ofs, const std::vector<T>& v)
+std::ostream& operator<<(std::ostream& ofs, const std::vector<T>& v)
 {
 	for(unsigned int i=0;i<v.size();i++)
         ofs<<v[i];
     ofs<<std::endl;
+	return ofs;
 }
 
 //pour convertir des vecteurs en string (ne présente pas un intérêt fou mais est utilisé dans le cpp associé)
