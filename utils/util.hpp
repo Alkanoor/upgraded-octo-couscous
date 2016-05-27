@@ -11,7 +11,7 @@
 bool read(const std::string& path, std::vector<unsigned char>& ret);
 
 //renvoie les dimensions du tableau des mots séparés (surtout utile pour de très gros fichiers mais utilisé dans les fonctions suivantes)
-void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize, unsigned int& nbLines, const std::set<unsigned char>& separators)
+void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize, unsigned int& nbLines, const std::set<unsigned char>& separators);
 
 //découpe un tableau d'octets en lignes (selon un séparateur qui peut être changé)
 unsigned int loadInVec(const std::vector<unsigned char>& in, std::vector<std::vector<unsigned char> >& ret, unsigned char separator = '\n');

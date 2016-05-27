@@ -10,14 +10,14 @@ TEST1 = read_csv.o
 
 all: test1 test2
 
-test1: read-csv
+test1: createDir read-csv
 
 test2:
 	echo "TEST2"
 
 
-read-csv: createDir $(TEST1)
-	$(CC) -o $(RELEASE_DIR)/$@ $(OBJ_DIR)/$^ $(LDFLAGS)
+read-csv: $(TEST1)
+	$(CC) -o $(RELEASE_DIR)/$@ $(OBJ_DIR)/$^ ../utils/util.cpp $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 
 

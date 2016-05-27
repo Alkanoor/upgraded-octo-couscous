@@ -9,5 +9,6 @@ int main()
 	std::cout<<"Read successful ? "<<read("../data/train.csv",raw)<<std::endl;
 
 	std::cout<<raw<<std::endl;
+
 	return 0;
 }

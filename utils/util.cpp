@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "util.hpp"
 
 
@@ -5,7 +7,7 @@ bool read(const std::string& path, std::vector<unsigned char>& ret)
 {
     std::ifstream ifs(path.c_str(),std::ios::in);
     if(!ifs)
-        return false;
+    return false;
     ifs.seekg(0,std::ios::end);
     unsigned int size = ifs.tellg();
     ret.resize(size);
@@ -16,24 +18,24 @@ bool read(const std::string& path, std::vector<unsigned char>& ret)
 
 void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize, unsigned int& nbLines, const std::set<unsigned char>& separators)
 {
-	unsigned int s=in.size();
+    unsigned int s=in.size();
     unsigned int curSize = 0;
-	maxSize = 0;
-	nbLines = 0;
+    maxSize = 0;
+    nbLines = 0;
     for(unsigned int i=0;i<s;i++)
-        if(separator.count(in[i]))
-        {
-            nbLines++;
-            if(curSize>maxSize)
-                maxSize = curSize;
-            curSize = 0;
-        }
-        else
-            curSize++;
+    if(separators.count(in[i]))
+    {
+        nbLines++;
+        if(curSize>maxSize)
+        maxSize = curSize;
+        curSize = 0;
+    }
+    else
+    curSize++;
     if(curSize)
     {
         if(curSize>maxSize)
-            maxSize = curSize;
+        maxSize = curSize;
         nbLines++;
     }
 }
@@ -42,9 +44,9 @@ unsigned int loadInVec(const std::vector<unsigned char>& in, std::vector<std::ve
 {
     unsigned int s=in.size();
     unsigned int maxSize = 0, nbLines = 0;
-	std::set<char> tmp;
-	tmp.insert(separator);
-    split_and_count(in,maxSize,nbLines,tmp);
+    std::set<unsigned char> separators;
+    separators.insert(separator);
+    split_and_count(in,maxSize,nbLines,separators);
 
     ret.resize(nbLines);
     unsigned int j=0,k=0;
@@ -85,7 +87,7 @@ unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std:
     tmp.resize(maxSize);
     for(unsigned int i=0;i<s;i++)
     {
-        if(in[i]==separator)
+        if(separators.count(in[i]))
         {
             ret[j] = tmp;
             ret[j].resize(k);
@@ -109,7 +111,7 @@ unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std:
 
 unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std::string>& ret, unsigned char separator)
 {
-    std::set<char> tmp;
-	tmp.insert(separator);
-	return loadInString(in,ret,tmp);
+    std::set<unsigned char> tmp;
+    tmp.insert(separator);
+    return loadInString(in,ret,tmp);
 }

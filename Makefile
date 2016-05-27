@@ -46,6 +46,7 @@ createDir:
 	@mkdir -p $(OUTPUT)
 
 clean :
+	make -C $(TESTS) clean
 	@rm -rf $(OBJ_DIR)
 	@rm -rf $(RELEASE_DIR)
 	@rm -rf $(RELEASE_DEBUG_DIR)
