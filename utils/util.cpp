@@ -14,14 +14,14 @@ bool read(const std::string& path, std::vector<unsigned char>& ret)
     return true;
 }
 
-void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize, unsigned int& nbLines, unsigned char separator)
+void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize, unsigned int& nbLines, const std::set<unsigned char>& separators)
 {
 	unsigned int s=in.size();
     unsigned int curSize = 0;
 	maxSize = 0;
 	nbLines = 0;
     for(unsigned int i=0;i<s;i++)
-        if(in[i]==separator)
+        if(separator.count(in[i]))
         {
             nbLines++;
             if(curSize>maxSize)
@@ -42,7 +42,9 @@ unsigned int loadInVec(const std::vector<unsigned char>& in, std::vector<std::ve
 {
     unsigned int s=in.size();
     unsigned int maxSize = 0, nbLines = 0;
-    split_and_count(in,maxSize,nbLines,separator);
+	std::set<char> tmp;
+	tmp.insert(separator);
+    split_and_count(in,maxSize,nbLines,tmp);
 
     ret.resize(nbLines);
     unsigned int j=0,k=0;
@@ -71,11 +73,11 @@ unsigned int loadInVec(const std::vector<unsigned char>& in, std::vector<std::ve
     return nbLines;
 }
 
-unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std::string>& ret, unsigned char separator)
+unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std::string>& ret, const std::set<unsigned char>& separators)
 {
     unsigned int s=in.size();
     unsigned int maxSize = 0, nbLines = 0;
-    split_and_count(in,maxSize,nbLines,separator);
+    split_and_count(in,maxSize,nbLines,separators);
 
     ret.resize(nbLines);
     unsigned int j=0,k=0;
@@ -103,4 +105,11 @@ unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std:
     }
 
     return nbLines;
+}
+
+unsigned int loadInString(const std::vector<unsigned char>& in, std::vector<std::string>& ret, unsigned char separator)
+{
+    std::set<char> tmp;
+	tmp.insert(separator);
+	return loadInString(in,ret,tmp);
 }
