@@ -2,4 +2,4 @@
 Data challenge SD207
 
 Done:<br/>
--read csv into vector of vector of strings with chosen separators
+-Read csv into vector of vector of strings with chosen separators, replace strings by char in file
