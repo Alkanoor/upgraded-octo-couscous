@@ -31,16 +31,24 @@ unsigned int split(const std::string &strToSplit, std::vector<std::string> &spli
 
 }
 
+void numberCapitalsPonctuation(const std::string &str, unsigned int &capitals, unsigned int & ponctuation, unsigned int &other)
+{
+	capitals=0;
+	ponctuation = 0;
+
+	for (unsigned int index = 0;index<str.size();index++)
+	{
+		if(str[index]=='!') ponctuation++;
+		else if(str[index]>='A' && str[index]<='Z') capitals ++;
+		else other++;
+	}
+
+}
+
 int main()
 {
-    std::vector<std::string> v;
-    unsigned int size = split( "This is a test", v, ' ');
-	cout << size<<endl;
-    for (unsigned int i =0; i<v.size();i++) cout << v[i]<<endl;
-    v.clear();
-    size = split( " This is    another  test ", v, ' ');
-
-    cout <<"\n"<<size<<endl;
-    for (unsigned int i =0; i<v.size();i++) cout << v[i]<<endl;
+   unsigned int cap,ponc,oth;
+   numberCapitalsPonctuation("Bonjour, Bienvenue à l'ENST !!!",cap,ponc,oth);
+   cout <<cap<<"\n"<<ponc<<"\n"<<oth<<endl;
     return 0;
 }
