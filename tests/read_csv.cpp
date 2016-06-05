@@ -26,7 +26,7 @@ int main()
 		cut[i] = tmp;
 	}
 
-	tmp.resize(10); //on ne teste qu'avec les 10 premières lignes
+	cut.resize(10); //on ne teste qu'avec les 10 premières lignes
 	std::set<unsigned char> separators = {'|','@',' '};
 	std::vector<std::string> words;
 	for(auto v : cut)

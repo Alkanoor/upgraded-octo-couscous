@@ -131,7 +131,7 @@ unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<un
         int found = -1;
         for(std::map<std::string,unsigned char>::const_iterator it=separators_replacement.begin();it!=separators_replacement.end();it++)
         {
-            int j=0;
+            unsigned int j=0;
             for(;j<it->first.size()&&i+j<in.size()&&in[i+j]==it->first[j];j++)
                 ;
             if(j>=it->first.size())
@@ -142,7 +142,7 @@ unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<un
             }
         }
 
-        if(found<=0||(max_occur>0&&n_occur>=max_occur))
+        if(found<=0||(max_occur>0&&(int)n_occur>=max_occur))
         {
             ret[cur] = in[i];
             cur++;

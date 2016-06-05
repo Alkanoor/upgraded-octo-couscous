@@ -3,26 +3,47 @@ RELEASE_DIR = bin
 
 CC = g++
 CFLAGS = -Wall -Werror -O1 -std=c++11
-LDFLAGS =
+LDFLAGS = -std=c++11
 
-TEST1 = read_csv.o
+TEST1 = $(OBJ_DIR)/read_csv.o $(OBJ_DIR)/utils/util.o
+TEST2 = $(OBJ_DIR)/replace_test.o $(OBJ_DIR)/utils/util.o
+TEST3 = $(OBJ_DIR)/read_csv_with_preprocessing.o $(OBJ_DIR)/utils/util.o $(OBJ_DIR)/utils/preprocessing.o $(OBJ_DIR)/utils/counts.o
+TEST4 = $(OBJ_DIR)/test_counts.o $(OBJ_DIR)/utils/counts.o
 
 
-all: test1 test2
+all: test1 test2 test3 test4
 
 test1: createDir read-csv
 
-test2:
-	echo "TEST2"
+test2: createDir replace_test
+
+test3: createDir read_csv_with_preprocessing
+
+test4: createDir test_counts
 
 
 read-csv: $(TEST1)
-	$(CC) -o $(RELEASE_DIR)/$@ $(OBJ_DIR)/$^ ../utils/util.cpp $(LDFLAGS)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+replace_test: $(TEST2)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+read_csv_with_preprocessing: $(TEST3)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_counts: $(TEST4)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 
 
-%.o: %.cpp
-	$(CC) -o $(OBJ_DIR)/$@ -c $< $(CFLAGS)
+$(OBJ_DIR)/utils/%.o: ../utils/%.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+$(OBJ_DIR)/%.o: %.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 createDir:
 	@mkdir -p $(OBJ_DIR)

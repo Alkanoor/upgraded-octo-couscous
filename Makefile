@@ -36,6 +36,15 @@ $(OBJ_DIR)/%.o: %.cpp
 test-read-csv:
 	make -C $(TESTS) test1
 
+test-replace:
+	make -C $(TESTS) test2
+
+test-read-csv-with-preprocessing:
+	make -C $(TESTS) test3
+
+test-counts:
+	make -C $(TESTS) test4
+
 exec-and-redirect:
 	$(EXEC) > $(OUTPUT)/current_out.txt
 
