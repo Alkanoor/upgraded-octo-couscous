@@ -3,13 +3,14 @@
 
 
 bool Preprocessing::initialized = false;
-std::map<std::string,unsigned char> Preprocessing::correspondances;
+std::map<std::string, unsigned char, std::greater<std::string> > Preprocessing::correspondances;
+std::map<std::string, std::string, std::greater<std::string> > Preprocessing::string_correspondances;
 
 
 Preprocessing::Preprocessing(const std::string& path, bool update) :
     updated_data(false)
 {
-    separators = {'|','#',' '};
+    separators = {'|','#',' ','/','-','\''};
     init();
     reset_path(path,update);
 }
@@ -32,6 +33,8 @@ const std::vector<std::vector<unsigned char> >& Preprocessing::first_processing(
     std::vector<unsigned char> tmp;
     for(unsigned int i=0;i<first_cut.size();i++)
 	{
+        replace_seq_by_string(first_cut[i], tmp, string_correspondances);
+        first_cut[i] = tmp;
 		replace_seq_by(first_cut[i], tmp, correspondances);
 		first_cut[i] = tmp;
 	}
@@ -53,6 +56,51 @@ const std::vector<std::vector<std::string> >& Preprocessing::second_processing()
     return second_cut;
 }
 
+void Preprocessing::update_case()
+{
+    for(unsigned int i=0;i<second_cut.size();i++)
+        for(unsigned int j=0;j<second_cut[i].size();j++)
+            for(unsigned int k=0;k<second_cut[i][j].size();k++)
+                if(second_cut[i][j][k]>='A'&&second_cut[i][j][k]<='Z')
+                    second_cut[i][j][k] = second_cut[i][j][k]-'A'+'a';
+}
+
+void Preprocessing::rescale_ascii()
+{
+    for(unsigned int i=0;i<second_cut.size();i++)
+        for(unsigned int j=0;j<second_cut[i].size();)
+        {
+            bool del = true;
+            for(unsigned int k=0;k<second_cut[i][j].size();k++)
+                if(second_cut[i][j][k]>='A'&&second_cut[i][j][k]<='Z')
+                    del = false;
+                else if(second_cut[i][j][k]>='a'&&second_cut[i][j][k]<='z')
+                    del = false;
+                else if(second_cut[i][j][k]>='0'&&second_cut[i][j][k]<='9')
+                    del = false;
+            if(del)
+                second_cut[i].erase(second_cut[i].begin()+j);
+            else
+                j++;
+        }
+}
+
+void Preprocessing::save_in_file(const std::string& path, bool title, bool endline) const
+{
+    std::ofstream ofs(path.c_str(),std::ios::trunc|std::ios::out);
+
+    for(unsigned int i=0;i<second_cut.size();i++)
+    {
+        if(title)
+            ofs<<"=============================== Comment number "<<i<<std::endl;
+        for(auto j : second_cut[i])
+            if(endline)
+                ofs<<j<<std::endl;
+            else
+                ofs<<j<<" ";
+        ofs<<std::endl;
+    }
+}
 
 void Preprocessing::set_separators(const std::set<unsigned char>& sep, bool update)
 {
@@ -75,8 +123,26 @@ void Preprocessing::init()
 {
     if(!initialized)
     {
-        correspondances[",\"\"\""] = '|';
+        string_correspondances["....."] = " ..... ";
+        string_correspondances["...."] = " .... ";
+        string_correspondances["..."] = " ... ";
+        string_correspondances[".."] = " .. ";
+        string_correspondances["."] = " . ";
+        string_correspondances["!!!!"] = " !!!! ";
+        string_correspondances["!!!"] = " !!! ";
+        string_correspondances["!!"] = " !! ";
+        string_correspondances["!"] = " ! ";
+        string_correspondances["???"] = " ??? ";
+        string_correspondances["??"] = " ?? ";
+        string_correspondances["?"] = " ? ";
+        string_correspondances[","] = " , ";
+        string_correspondances[";"] = " ; ";
+        string_correspondances["("] = " ( ";
+        string_correspondances[")"] = " ) ";
+        correspondances[", \"\"\""] = '|';
     	correspondances["\"\"\""] = '#';
+    	correspondances["\\\\xc2"]=' ';
+    	correspondances["\\\\xa0"]=' ';
     	correspondances["\\xa0"]=' ';
     	correspondances["\\xa1"]=' ';
     	correspondances["\\xa3"]=' ';
@@ -137,6 +203,7 @@ void Preprocessing::init()
     	correspondances["\\U0001f48b"]=' ';
     	correspondances["\\\\"]=' ';
     	correspondances["\\ "]=' ';
+    	correspondances["\""]=' ';
 
         initialized = true;
     }

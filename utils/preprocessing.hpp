@@ -3,6 +3,7 @@
 
 
 #include <functional>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <map>
@@ -20,8 +21,13 @@ class Preprocessing
         const std::vector<std::vector<unsigned char> >& first_processing(); // basic computation of data (encoded chars are replaced by readable ones)
         const std::vector<std::vector<std::string> >& second_processing();  // computation which gives words unsing separators
 
+        void update_case();
+        void rescale_ascii();
+
         template <typename T>
         std::vector<T> apply(const std::function<T(const std::vector<std::string>&)>& func); // method that allows us to get the mapped result of a function through all the lines of the input
+
+        void save_in_file(const std::string& path, bool title = true, bool endline = true) const;
 
         void set_separators(const std::set<unsigned char>& sep, bool update = false);
 
@@ -29,7 +35,8 @@ class Preprocessing
 
     private:
         static bool initialized;
-        static std::map<std::string, unsigned char> correspondances;
+        static std::map<std::string, unsigned char, std::greater<std::string> > correspondances;
+        static std::map<std::string, std::string, std::greater<std::string> > string_correspondances;
 
         std::set<unsigned char> separators;
 

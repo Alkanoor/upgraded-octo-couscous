@@ -29,9 +29,15 @@ En attendant : on remplace les mots par un caractère qui jouera le rôle de sé
 Le dernier paramètre correspond au nombre maximal d'occurences à remplacer (max_occur <= 0 conserve toutes les occurences) (par exemple si on veut séparer le premier chiffre du commentaire, on ne veux remplacer que la première occurence du séparateur entre les deux pour chaque ligne)
 Retourne le nombre d'occurences effectivement remplacées
 **/
-unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,unsigned char>& separators_replacement, int max_occur = -1);
+unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,unsigned char,std::greater<std::string> >& separators_replacement, int max_occur = -1);
 //cas particulier
 unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::string& separator, unsigned char to_replace_by, int max_occur = -1);
+
+//la même chose avec des strings
+unsigned int replace_seq_by_string(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,std::string,std::greater<std::string> >& separators_replacement, int max_occur = -1);
+//cas particulier
+unsigned int replace_seq_by_string(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::string& separator, const std::string& to_replace_by, int max_occur = -1);
+
 
 
 //pour afficher facilement des vecteurs
@@ -41,6 +47,42 @@ std::ostream& operator<<(std::ostream& ofs, const std::vector<T>& v)
 	for(unsigned int i=0;i<v.size();i++)
         ofs<<v[i];
     ofs<<std::endl;
+	return ofs;
+}
+
+//pour afficher facilement des map
+template <typename T, typename U>
+std::ostream& operator<<(std::ostream& ofs, const std::map<T,U>& v)
+{
+	for(auto it=v.begin(); it!=v.end(); it++)
+        ofs<<it->first<<" : "<<it->second<<std::endl;
+	return ofs;
+}
+
+template <typename T, typename U>
+std::map<U,std::vector<T> > reverse_map(const std::map<T,U>& m)
+{
+    std::map<U,std::vector<T> > ret;
+    for(auto it=m.begin(); it!=m.end(); it++)
+        ret[it->second].push_back(it->first);
+    return ret;
+}
+
+//pour afficher facilement des map de manière triée
+template <typename T, typename U>
+std::ostream& print_map_sorted(std::ostream& ofs, const std::map<T,U>& v, int number_elements = -1)
+{
+    std::map<U,std::vector<T> > reversed_map = reverse_map(v);
+    std::map<T,U> sorted_map;
+    int i=0;
+    for(auto it=reversed_map.begin(); it!=reversed_map.end() && i<number_elements; it++)
+    {
+        if(number_elements<0)
+            for(auto j : it->second)
+                sorted_map[j] = it->first;
+        i += it->second.size();
+    }
+	ofs<<sorted_map;
 	return ofs;
 }
 

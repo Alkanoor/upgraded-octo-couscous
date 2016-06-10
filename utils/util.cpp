@@ -120,7 +120,7 @@ unsigned int load_in_string(const std::vector<unsigned char>& in, std::vector<st
     return load_in_string(in,ret,tmp);
 }
 
-unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,unsigned char>& separators_replacement, int max_occur)
+unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,unsigned char,std::greater<std::string>>& separators_replacement, int max_occur)
 {
     //TODO : optimiser la recherche de sous occurences (non critique)
     unsigned int n_occur = 0, cur = 0;
@@ -143,14 +143,60 @@ unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<un
         }
 
         if(found<=0||(max_occur>0&&(int)n_occur>=max_occur))
+            ret[cur] = in[i];
+        else
+        {
+            ret[cur] = corresp;
+            i += found-1;
+            n_occur++;
+        }
+        cur++;
+    }
+    ret.resize(cur);
+
+    return n_occur;
+}
+
+unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::string& separator, unsigned char to_replace_by, int max_occur)
+{
+    std::map<std::string, unsigned char, std::greater<std::string> > tmp;
+    tmp[separator] = to_replace_by;
+    return replace_seq_by(in,ret,tmp,max_occur);
+}
+
+unsigned int replace_seq_by_string(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::map<std::string,std::string,std::greater<std::string> >& separators_replacement, int max_occur)
+{
+    //TODO : optimiser la recherche de sous occurences (non critique)
+    unsigned int n_occur = 0, cur = 0;
+    std::string corresp;
+    ret.resize(in.size());
+    for(unsigned int i=0;i<in.size();i++)
+    {
+        int found = -1;
+        for(std::map<std::string,std::string>::const_iterator it=separators_replacement.begin();it!=separators_replacement.end();it++)
+        {
+            unsigned int j=0;
+            for(;j<it->first.size()&&i+j<in.size()&&in[i+j]==it->first[j];j++)
+                ;
+            if(j>=it->first.size())
+            {
+                found = it->first.size();
+                corresp = it->second;
+                break;
+            }
+        }
+
+        if(found<=0||(max_occur>0&&(int)n_occur>=max_occur))
         {
             ret[cur] = in[i];
             cur++;
         }
         else
         {
-            ret[cur] = corresp;
-            cur++;
+            ret.resize(ret.size()+corresp.size());
+            for(unsigned int j=0;j<corresp.size();j++)
+                ret[cur+j] = corresp[j];
+            cur += (int)corresp.size();
             i += found-1;
             n_occur++;
         }
@@ -160,9 +206,9 @@ unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<un
     return n_occur;
 }
 
-unsigned int replace_seq_by(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::string& separator, unsigned char to_replace_by, int max_occur)
+unsigned int replace_seq_by_string(const std::vector<unsigned char>& in, std::vector<unsigned char>& ret, const std::string& separator, const std::string& to_replace_by, int max_occur)
 {
-    std::map<std::string, unsigned char> tmp;
+    std::map<std::string, std::string, std::greater<std::string> > tmp;
     tmp[separator] = to_replace_by;
-    return replace_seq_by(in,ret,tmp,max_occur);
+    return replace_seq_by_string(in,ret,tmp,max_occur);
 }

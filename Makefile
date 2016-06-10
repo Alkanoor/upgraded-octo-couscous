@@ -3,7 +3,7 @@ SRC_DIR1 = .
 SRC_DIR2 = utils
 SRC = $(wildcard $(SRC_DIR2)/*.cpp) $(wildcard $(SRC_DIR1)/*.cpp)
 OBJ := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(notdir $(SRC)))
-VPATH=.:src
+VPATH=.:utils
 
 
 RELEASE_DIR = bin
