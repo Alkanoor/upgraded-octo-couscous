@@ -1,5 +1,7 @@
 #include "tfidf.hpp"
 #include <cmath>
+#include <list>
+#include <utility>
 #include<iostream>
 
 float tf(std::vector<std::vector<int>> in, int comm, int word)
@@ -65,4 +67,47 @@ float tfidf_trained(std::vector<std::vector<int>> in, int comm,std::vector<float
     for(unsigned int i=1; i<in[comm].size(); i++)
     tfidf+=idf[in[comm][i]];
     return tfidf/(float)in[comm].size();
+}
+
+bool comp(std::pair<int,float>a,std::pair<int,float>b)
+{
+    return a.second<b.second;
+}
+bool comp2(std::pair<float,float>a,std::pair<float,float>b)
+{
+    return a.second>b.second;
+}
+std::pair<float,float> threshold(std::vector<std::vector<int>> in, std::vector<float> tfidf_score)
+{
+    std::cout.flush();
+    int nb_onesR=0,nb_zerosL=0,nb_zerosR=0, nb_onesL=0, total=0;
+    std::list<std::pair<float,float>>score;
+    std::list<std::pair<int,float>> result;
+    for(unsigned int i=0; i<tfidf_score.size(); i++)
+    {
+        result.push_back(std::pair<int,float>(in[i][0],tfidf_score[i]));
+        if(in[i][0]==1)
+        nb_zerosR++;
+        else
+        nb_onesR++;
+    }
+    total=nb_zerosR+nb_onesR;
+    result.sort(comp);
+    for(auto i=result.begin(); i!=result.end(); i++)
+    {
+        if((*i).first==225)
+        {
+            nb_onesL++;
+            nb_onesR--;
+        }
+        else
+        {
+            nb_zerosL++;
+            nb_zerosR--;
+        }
+        score.push_back(std::pair<float,float>((*i).second,1-(float)(nb_onesL+nb_zerosR)/total));
+    }
+    score.sort(comp2);
+
+    return *score.begin();
 }

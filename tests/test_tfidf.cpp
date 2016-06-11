@@ -28,13 +28,14 @@ int main()
     for(int i=0; i<size; i++)
     {
         idf[i] = idf_train(vect,i);
-        std::cout << (float)i/(float)size<<'%'<<std::endl;
+        //std::cout << (float)i/(float)size<<'%'<<std::endl;
     }
     for(unsigned j=0; j<vect.size(); j++)
     {
         score[j]=tfidf_trained(vect,j,idf);
-        std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
+        //std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
     }
-        //std::cout << "value for "<<word<<": "<<idf_train(vect,dico[word])<<std::endl;
-        return 0;
+    auto t=threshold(vect,score);
+    std::cout << "seuil : "<<t.first<<" => score théorique :"<<t.second<<std::endl;
+    return 0;
     }
