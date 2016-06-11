@@ -4,6 +4,8 @@
 
 #include "preprocessing.hpp"
 
+#include <cmath>
+
 
 class Vectorizer
 {
@@ -30,6 +32,7 @@ class Vectorizer
 		std::map<std::string,int> insults_counter;
 		std::map<std::string,int> non_insults_counter;
 		std::map<std::string,double> scores;
+		std::map<std::string,double> normalized_for_insult_proba;
 
 		int n_insults;
 

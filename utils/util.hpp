@@ -75,11 +75,10 @@ std::ostream& print_map_sorted(std::ostream& ofs, const std::map<T,U>& v, int nu
     std::map<U,std::vector<T> > reversed_map = reverse_map(v);
     std::map<T,U> sorted_map;
     int i=0;
-    for(auto it=reversed_map.begin(); it!=reversed_map.end() && i<number_elements; it++)
+    for(auto it=reversed_map.begin(); it!=reversed_map.end() && (i<number_elements||number_elements<0); it++)
     {
-        if(number_elements<0)
-            for(auto j : it->second)
-                sorted_map[j] = it->first;
+        for(auto j : it->second)
+            sorted_map[j] = it->first;
         i += it->second.size();
     }
 	ofs<<sorted_map;

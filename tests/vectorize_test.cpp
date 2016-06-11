@@ -17,8 +17,8 @@ int main()
     Vectorizer v(words);
 
     std::cout<<v.get_ratio_insults()<<std::endl;
-    //std::cout<<v.get_dictionary()<<std::endl;
-    print_map_sorted(std::cout,v.get_dictionary())<<std::endl;
+    auto scores = v.get_scores();
+    print_map_sorted(std::cout,scores,20)<<std::endl;
 
     return 0;
 }
