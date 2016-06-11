@@ -10,11 +10,12 @@ TEST2 = $(OBJ_DIR)/replace_test.o $(OBJ_DIR)/util.o
 TEST3 = $(OBJ_DIR)/read_csv_with_preprocessing.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/counts.o
 TEST4 = $(OBJ_DIR)/test_counts.o $(OBJ_DIR)/counts.o
 TEST5 = $(OBJ_DIR)/vectorize_test.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o
+TEST6 = $(OBJ_DIR)/test_tfidf.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o
 
 VPATH = .:../utils
 
 
-all: test1 test2 test3 test4 test5
+all: test1 test2 test3 test4 test5 test6
 
 test1: createDir read-csv
 
@@ -25,6 +26,8 @@ test3: createDir read_csv_with_preprocessing
 test4: createDir test_counts
 
 test5: createDir vectorize_test
+
+test6: createDir test_tfidf
 
 
 read-csv: $(TEST1)
@@ -44,6 +47,10 @@ test_counts: $(TEST4)
 	$(RELEASE_DIR)/$@
 
 vectorize_test: $(TEST5)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_tfidf: $(TEST6)
 	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 

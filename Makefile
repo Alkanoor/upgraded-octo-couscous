@@ -45,6 +45,9 @@ test-read-csv-with-preprocessing:
 test-counts:
 	make -C $(TESTS) test4
 
+test_tfidf:
+	make -C $(TESTS) test6
+
 exec-and-redirect:
 	$(EXEC) > $(OUTPUT)/current_out.txt
 
