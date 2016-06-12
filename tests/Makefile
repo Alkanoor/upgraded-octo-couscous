@@ -3,8 +3,8 @@ RELEASE_DIR = bin
 OUTPUT_DIR = output
 
 CC = g++
-CFLAGS = -Wall -Werror -O1 -std=c++11
-LDFLAGS = -std=c++11
+CFLAGS = -Wall -Werror -O1 -std=c++11 -I"C:\Program Files (x86)\CodeBlocks\boost_1_59_0"
+LDFLAGS = -std=c++11 -L"C:\Boost\lib" -lboost_regex-mgw49-mt-1_59
 
 TEST1 = $(OBJ_DIR)/read_csv.o $(OBJ_DIR)/util.o
 TEST2 = $(OBJ_DIR)/replace_test.o $(OBJ_DIR)/util.o

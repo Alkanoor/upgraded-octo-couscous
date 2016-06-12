@@ -17,12 +17,8 @@ int main()
     //std::string word="http:";
     int size;
     Preprocessing p("../data/train.csv");
-    p.update_case();
-    p.rescale_ascii();
     p.save_in_file("output/modified.txt");
     Preprocessing p_test("../data/test.csv");
-    p_test.update_case();
-    p_test.rescale_ascii();
 
     auto words = p.get_words();
     auto words_test=p_test.get_words();
@@ -66,10 +62,32 @@ int main()
     for(unsigned j=0; j<vect.size(); j++)
     {
         score[j]=tfidf_trained(vect,j,idf);
-        if(!((j+1)%100))
+        if(!((j+1)%10))
         std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
     }
-    auto t=threshold(vect,score);
+
+    int max_cool = 0;
+    float best_f = 0, best_score = 0;
+    for(float f=0.4;f<1.2;f+=0.001)
+    {
+        int cool = 0;
+        for(unsigned int j=0;j<score.size();j++)
+            if(score[j]<f&&vect[j][0]==1)
+                cool++;
+            else if(score[j]>=f&&vect[j][0]!=1)
+                cool++;
+        if(cool>max_cool)
+        {
+            max_cool = cool;
+            best_f = f;
+            best_score = (float)cool/(float)score.size();
+            std::cout<<"New best : "<<f<<" "<<cool<<" "<<best_score<<std::endl;
+        }
+    }
+
+    std::pair<float,float> t;
+    //t = threshold(vect,score);
+    t = std::pair<float,float>(best_f,best_score);
     std::cout << "seuil : "<<t.first<<" => score théorique :"<<t.second<<std::endl;
     for(unsigned j=0; j<vect_test.size(); j++)
     {
@@ -84,20 +102,6 @@ int main()
         else
         out<<"0\n";
     }
-
-    std::ofstream out2("output/output2.txt",std::ios::out);
-    float m = score[0], M = score[0];
-    for(unsigned int j=1;j<score.size();j++)
-        if(score[j]<m)
-            m = score[j];
-        else if(score[j]>M)
-            M = score[j];
-
-    for(unsigned int j=0;j<score.size();j++)
-        if(score[j]<t.first)
-            out2<<1./(1.+exp(-5*(score[j]-t.first)/(t.first-m)))<<std::endl;
-        else
-            out2<<1./(1.+exp(-5*(t.first-score[j])/(t.first-M)))<<std::endl;
 
     return 0;
 }

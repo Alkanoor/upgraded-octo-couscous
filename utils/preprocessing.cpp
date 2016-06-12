@@ -2,6 +2,10 @@
 #include "util.hpp"
 
 
+#include <iostream>
+#include <fstream>
+
+
 bool Preprocessing::initialized = false;
 std::map<std::string, unsigned char, std::greater<std::string> > Preprocessing::correspondances;
 std::map<std::string, std::string, std::greater<std::string> > Preprocessing::string_correspondances;
@@ -29,7 +33,7 @@ void Preprocessing::reset_path(const std::string& path, bool update)
 const std::vector<std::vector<unsigned char> >& Preprocessing::first_processing()
 {
     load_in_vec(raw, first_cut);
-	
+
     std::vector<unsigned char> tmp;
     for(unsigned int i=0;i<first_cut.size();i++)
 	{
@@ -54,6 +58,167 @@ const std::vector<std::vector<std::string> >& Preprocessing::second_processing()
 	}
 
     return second_cut;
+}
+
+const std::vector<std::vector<std::string> >& Preprocessing::third_processing()
+{
+    for(unsigned int i=0;i<second_cut.size();i++)
+        for(unsigned int j=0;j<second_cut[i].size();j++)
+            second_cut[i][j] = regexing(second_cut[i][j]);
+
+    return second_cut;
+}
+
+std::string Preprocessing::regexing(const std::string& s)
+{
+    std::string ret = s;
+
+    #ifdef REGEX_ENABLED
+
+    boost::regex reg("\\\"");
+    ret = boost::regex_replace(s,reg,"");
+
+    reg = boost::regex("ass.*$");
+    ret = boost::regex_replace(ret,reg,"ass");
+
+    reg = boost::regex("a\\$\\$");
+    ret = boost::regex_replace(ret,reg,"ass");
+
+    reg = boost::regex("a\\$\\$.*$");
+    ret = boost::regex_replace(ret,reg,"ass");
+
+    reg = boost::regex("a\\*\\*.*$");
+    ret = boost::regex_replace(ret,reg,"ass");
+
+    reg = boost::regex("f(\\*)");
+    ret = boost::regex_replace(ret,reg,"fuck");
+
+    //reg = boost::regex("f(\\*)*ck.*");
+    //ret = boost::regex_replace(ret,reg,"fuck");
+
+    reg = boost::regex("f.*uckin.*$");
+    ret = boost::regex_replace(ret,reg,"fuck");
+
+    reg = boost::regex("f.?.?.?.?uck.?.?.?.?.?.?.?.?.?.?you$");
+    ret = boost::regex_replace(ret,reg,"fuckyou");
+
+    reg = boost::regex("f.?.?.?.?uck.*$");
+    ret = boost::regex_replace(ret,reg,"fuck");
+
+    reg = boost::regex("(\\*)+");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("\\$[0-9]+k?");
+    ret = boost::regex_replace(ret,reg,"dollars");
+
+    reg = boost::regex("\\$stupid");
+    ret = boost::regex_replace(ret,reg,"stupid");
+
+    reg = boost::regex("&amp");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("&nbsp");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("\\\\x.{2}");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("^[0-9]+k.*$");
+    ret = boost::regex_replace(ret,reg,"dollars");
+
+    reg = boost::regex("^[0-9]+th.*$");
+    ret = boost::regex_replace(ret,reg,"date");
+
+    reg = boost::regex("^[0-9]+mn.*$");
+    ret = boost::regex_replace(ret,reg,"time");
+
+    reg = boost::regex("^[0-9]{4}[0-9]*[^0-9]+$");
+    ret = boost::regex_replace(ret,reg,"number");
+
+    reg = boost::regex("^[0-9]{4}");
+    ret = boost::regex_replace(ret,reg,"year");
+
+    reg = boost::regex("^[0-9]{2}.*$");
+    ret = boost::regex_replace(ret,reg,"number");
+
+    reg = boost::regex("^\\:.*$");
+    ret = boost::regex_replace(ret,reg,"smiley");
+
+    reg = boost::regex("<3");
+    ret = boost::regex_replace(ret,reg,"love");
+
+    reg = boost::regex("<[^>]*>");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("<[^>]*>");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex(">");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("<");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("^@.*$");
+    ret = boost::regex_replace(ret,reg,"pseudo");
+
+    reg = boost::regex("@");
+    ret = boost::regex_replace(ret,reg,"a");
+
+    reg = boost::regex("\\[[^\\]]\\]");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("\\\\tick");
+    ret = boost::regex_replace(ret,reg,"tick");
+
+    reg = boost::regex("\\\\t");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("\\\\u[0-9a-f]{4}");
+    ret = boost::regex_replace(ret,reg,"");
+
+    reg = boost::regex("extra*$");
+    ret = boost::regex_replace(ret,reg,"extra");
+
+    reg = boost::regex("extre*$");
+    ret = boost::regex_replace(ret,reg,"extreme");
+
+    reg = boost::regex("face.*.*.*$");
+    ret = boost::regex_replace(ret,reg,"face");
+
+    reg = boost::regex("fag.*$");
+    ret = boost::regex_replace(ret,reg,"fag");
+
+    reg = boost::regex("fail.*$");
+    ret = boost::regex_replace(ret,reg,"fail");
+
+    reg = boost::regex("faith.*$");
+    ret = boost::regex_replace(ret,reg,"faith");
+
+    reg = boost::regex("fak.*$");
+    ret = boost::regex_replace(ret,reg,"fak");
+
+    reg = boost::regex("fall.*$");
+    ret = boost::regex_replace(ret,reg,"fall");
+
+    reg = boost::regex("fals.*$");
+    ret = boost::regex_replace(ret,reg,"fals");
+
+    reg = boost::regex("fanatic.*$");
+    ret = boost::regex_replace(ret,reg,"fnatic");
+
+    reg = boost::regex("fantas.*$");
+    ret = boost::regex_replace(ret,reg,"fntasie");
+
+    reg = boost::regex("fan.*$");
+    ret = boost::regex_replace(ret,reg,"fan");
+
+    reg = boost::regex("stalk.*$");
+    ret = boost::regex_replace(ret,reg,"stalk");
+
+    #endif
+
+    return ret;
 }
 
 void Preprocessing::update_case()
@@ -116,6 +281,10 @@ void Preprocessing::update_priv()
 {
     first_processing();
     second_processing();
+    rescale_ascii();
+    update_case();
+    third_processing();
+    rescale_ascii();
     updated_data = true;
 }
 
@@ -123,6 +292,18 @@ void Preprocessing::init()
 {
     if(!initialized)
     {
+        std::ifstream others("../data/correspondancesAdded.txt");
+        if(!others)
+            std::cerr<<"No file for correspondances found !"<<std::endl;
+        else
+        {
+            std::string tmp1, tmp2;
+            while(others>>tmp1)
+            {
+                others>>tmp2;
+                string_correspondances[tmp1] = tmp2;
+            }
+        }
         string_correspondances["....."] = " ..... ";
         string_correspondances["...."] = " .... ";
         string_correspondances["..."] = " ... ";

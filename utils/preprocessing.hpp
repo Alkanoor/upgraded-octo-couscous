@@ -2,8 +2,13 @@
 #define PREPROCESSING_HPP_INCLUDED
 
 
+#define REGEX_ENABLED
+
+#ifdef REGEX_ENABLED
+#include <boost/regex.hpp>
+#endif
+
 #include <functional>
-#include <fstream>
 #include <vector>
 #include <string>
 #include <map>
@@ -20,6 +25,9 @@ class Preprocessing
 
         const std::vector<std::vector<unsigned char> >& first_processing(); // basic computation of data (encoded chars are replaced by readable ones)
         const std::vector<std::vector<std::string> >& second_processing();  // computation which gives words unsing separators
+        const std::vector<std::vector<std::string> >& third_processing();   // computation which takes regex and clean input
+
+        static std::string regexing(const std::string& s);
 
         void update_case();
         void rescale_ascii();
