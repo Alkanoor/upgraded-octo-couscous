@@ -1,5 +1,6 @@
 OBJ_DIR = obj
 RELEASE_DIR = bin
+OUTPUT_DIR = output
 
 CC = g++
 CFLAGS = -Wall -Werror -O1 -std=c++11
@@ -61,7 +62,9 @@ $(OBJ_DIR)/%.o: %.cpp
 createDir:
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(RELEASE_DIR)
+	@mkdir -p $(OUTPUT_DIR)
 
 clean :
 	@rm -rf $(OBJ_DIR)
 	@rm -rf $(RELEASE_DIR)
+	@rm -rf $(OUTPUT_DIR)

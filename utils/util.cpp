@@ -5,9 +5,9 @@
 
 bool read(const std::string& path, std::vector<unsigned char>& ret)
 {
-    std::ifstream ifs(path.c_str(),std::ios::in);
+    std::ifstream ifs(path.c_str(),std::ios::in|std::ios::binary);
     if(!ifs)
-    return false;
+        return false;
     ifs.seekg(0,std::ios::end);
     unsigned int size = ifs.tellg();
     ret.resize(size);
@@ -23,19 +23,23 @@ void split_and_count(const std::vector<unsigned char>& in, unsigned int& maxSize
     maxSize = 0;
     nbLines = 0;
     for(unsigned int i=0;i<s;i++)
-    if(separators.count(in[i]))
-    {
-        nbLines++;
-        if(curSize>maxSize)
-        maxSize = curSize;
-        curSize = 0;
-    }
-    else
-    curSize++;
+        if(separators.count(in[i]))
+        {
+            if(curSize)
+            {
+                if(curSize>maxSize)
+                    maxSize = curSize;
+                nbLines++;
+            }
+            curSize = 0;
+        }
+        else
+            curSize++;
+
     if(curSize)
     {
         if(curSize>maxSize)
-        maxSize = curSize;
+            maxSize = curSize;
         nbLines++;
     }
 }

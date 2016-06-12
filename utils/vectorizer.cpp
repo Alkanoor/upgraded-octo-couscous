@@ -62,24 +62,15 @@ void Vectorizer::vectorize()
 		if(non_insults_counter.count(it->first))
 			m2 = (double)non_insults_counter[it->first]/(double)(words.size()-n_insults);
 		scores[it->first] = score(m1,m2,a,b);
-		if(scores[it->first]<0.1)
-            std::cout<<scores[it->first]<<" "<<it->first<<" => "<<insults_counter[it->first]<<" "<<non_insults_counter[it->first]<<std::endl;
 
         if(insults_counter[it->first]>non_insults_counter[it->first])
             normalized_for_insult_proba[it->first] = 4.*(0.25-scores[it->first])-0.5;
         else
             normalized_for_insult_proba[it->first] = 0.5-4.*(0.25-scores[it->first]);
 
-        if(scores[it->first]<0.1)
-            std::cout<<it->first<<" "<<normalized_for_insult_proba[it->first]<<std::endl;
-
         if(fabs(normalized_for_insult_proba[it->first])<0.1)
             normalized_for_insult_proba[it->first] = 0;
-
-        if(scores[it->first]<0.1)
-            std::cout<<it->first<<" "<<normalized_for_insult_proba[it->first]<<std::endl;
 	}
-	std::cout<<scores.size()<<std::endl;
 
 	vectorized.resize(words.size());
 	int i=0, good=0;
@@ -104,13 +95,11 @@ void Vectorizer::vectorize()
         {
             if(comment[0]=="0")
                 good++;
-            std::cout<<"0 "<<comment[0]<<std::endl;
         }
         else
         {
             if(comment[0]!="0")
                 good++;
-            std::cout<<"1 "<<comment[0]<<std::endl;
         }
         i++;
     }

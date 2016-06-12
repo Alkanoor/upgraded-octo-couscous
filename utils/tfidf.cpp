@@ -4,7 +4,7 @@
 #include <utility>
 #include<iostream>
 
-float tf(std::vector<std::vector<int>> in, int comm, int word)
+float tf(const std::vector<std::vector<int>>& in, int comm, int word)
 {
     float total=(float)in[comm].size();
     float word_count=0.0;
@@ -17,7 +17,7 @@ float tf(std::vector<std::vector<int>> in, int comm, int word)
 }
 //dans la tfidf classique, ça représente la rareté d'un mot dans le corpus,
 //la ça va être la rareté d'un mot dans les bons commentaires
-float idf(std::vector<std::vector<int>> in, int word)
+float idf(const std::vector<std::vector<int>>& in, int word)
 {
     int d=in.size();
     int d_word=0;
@@ -35,7 +35,7 @@ float idf(std::vector<std::vector<int>> in, int word)
     return log((float)d/(float)d_word);
 }
 
-float idf_train(std::vector<std::vector<int>> in, int word)
+float idf_train(const std::vector<std::vector<int>>& in, int word)
 {
     int d0=1;
     int d1=1;
@@ -55,13 +55,13 @@ float idf_train(std::vector<std::vector<int>> in, int word)
 }
 
 
-float tfidf(std::vector<std::vector<int>> in, int comm, int word)
+float tfidf(const std::vector<std::vector<int>>& in, int comm, int word)
 {
     float tfidf=tf(in,comm,word)*idf(in,word);
     return tfidf;
 }
 
-float tfidf_trained(std::vector<std::vector<int>> in, int comm,std::vector<float> idf)
+float tfidf_trained(const std::vector<std::vector<int>>& in, int comm,const std::vector<float>& idf)
 {
     float tfidf=0;
     for(unsigned int i=1; i<in[comm].size(); i++)
@@ -77,7 +77,7 @@ bool comp2(std::pair<float,float>a,std::pair<float,float>b)
 {
     return a.second>b.second;
 }
-std::pair<float,float> threshold(std::vector<std::vector<int>> in, std::vector<float> tfidf_score)
+std::pair<float,float> threshold(const std::vector<std::vector<int>>& in, const std::vector<float>& tfidf_score)
 {
     std::cout.flush();
     int nb_onesR=0,nb_zerosL=0,nb_zerosR=0, nb_onesL=0, total=0;

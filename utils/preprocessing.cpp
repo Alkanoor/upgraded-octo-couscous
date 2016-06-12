@@ -29,7 +29,7 @@ void Preprocessing::reset_path(const std::string& path, bool update)
 const std::vector<std::vector<unsigned char> >& Preprocessing::first_processing()
 {
     load_in_vec(raw, first_cut);
-
+	
     std::vector<unsigned char> tmp;
     for(unsigned int i=0;i<first_cut.size();i++)
 	{

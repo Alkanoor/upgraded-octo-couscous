@@ -10,7 +10,7 @@
 int main()
 {
     std::fstream out;
-    out.open("output.txt",std::fstream::out|std::fstream::trunc);
+    out.open("output/output.txt",std::fstream::out|std::fstream::trunc);
     std::vector<float> idf;
     std::vector<float> score;
     float meanidf=0;
@@ -26,6 +26,7 @@ int main()
 
     auto words = p.get_words();
     auto words_test=p_test.get_words();
+
     Vectorizer v(words);
     std::vector<std::vector<int>> vect= v.get_vectorized();
     auto dico = v.get_dictionary();
@@ -49,7 +50,8 @@ int main()
     for(int i=0; i<size; i++)
     {
         idf[i] = idf_train(vect,i);
-        std::cout << (float)i/(float)size<<'%'<<std::endl;
+        if(!((i+1)%1000))
+            std::cout << (float)i/(float)size<<'%'<<std::endl;
     }
     for(int i=0; i<size; i++)
     {
@@ -64,6 +66,7 @@ int main()
     for(unsigned j=0; j<vect.size(); j++)
     {
         score[j]=tfidf_trained(vect,j,idf);
+        if(!((j+1)%100))
         std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
     }
     auto t=threshold(vect,score);
@@ -72,12 +75,29 @@ int main()
     {
         score[j]=tfidf_trained(vect_test,j,idf);
     }
-    for(unsigned j=0; j<vect_test.size(); j++)
+    score.resize(vect_test.size());
+
+    for(unsigned j=0; j<score.size(); j++)
     {
         if(score[j]>=t.first)
         out<<"1\n";
         else
         out<<"0\n";
     }
+
+    std::ofstream out2("output/output2.txt",std::ios::out);
+    float m = score[0], M = score[0];
+    for(unsigned int j=1;j<score.size();j++)
+        if(score[j]<m)
+            m = score[j];
+        else if(score[j]>M)
+            M = score[j];
+
+    for(unsigned int j=0;j<score.size();j++)
+        if(score[j]<t.first)
+            out2<<1./(1.+exp(-5*(score[j]-t.first)/(t.first-m)))<<std::endl;
+        else
+            out2<<1./(1.+exp(-5*(t.first-score[j])/(t.first-M)))<<std::endl;
+
     return 0;
-    }
+}
