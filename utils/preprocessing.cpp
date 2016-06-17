@@ -41,6 +41,8 @@ const std::vector<std::vector<unsigned char> >& Preprocessing::first_processing(
         first_cut[i] = tmp;
 		replace_seq_by(first_cut[i], tmp, correspondances);
 		first_cut[i] = tmp;
+		replace_seq_by(first_cut[i], tmp, correspondances);
+		first_cut[i] = tmp;
 	}
 
     return first_cut;
@@ -384,7 +386,10 @@ void Preprocessing::init()
     	correspondances["\\U0001f48b"]=' ';
     	correspondances["\\\\"]=' ';
     	correspondances["\\ "]=' ';
+    	correspondances["\"\""]=' ';
     	correspondances["\""]=' ';
+    	correspondances["&nbsp"]=' ';
+    	correspondances["&amp"]=' ';
 
         initialized = true;
     }
