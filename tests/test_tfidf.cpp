@@ -10,10 +10,14 @@
 int main()
 {
     std::fstream out;
+    float sign;
+    float shift_parameter=0.84;//intuitivement, cela signifie qu'on peut considérer qu'un mot est toxique à partir de ce seuil
+    // avec power_parametre on étire les scores autour de shift_parameter;
+    float power_parameter=1.9;//1.93 prédisait mieux sur nos données mais moins bien en submission
     out.open("output/output.txt",std::fstream::out|std::fstream::trunc);
     std::vector<float> idf;
     std::vector<float> score;
-    float meanidf=0;
+    float meanidf=0,variance=0;
     //std::string word="http:";
     int size;
     Preprocessing p("../data/train.csv");
@@ -53,22 +57,35 @@ int main()
     {
         meanidf += idf[i]/size;
     }
-
-    meanidf-=1; //ca marchais mieux avec ça. Apparemment il y a des mots quand tu les utilises t'es gentil.
     for(int i=0; i<size; i++)
     {
-        idf[i] = abs((idf[i]-meanidf))*(idf[i]-meanidf); //je boost un peu la variance de sorte que le mots peu sgnificatif impacte moins.
+        idf[i] = (idf[i]-meanidf);
+    }
+    for(int i=0; i<size; i++)
+    {
+        variance += (idf[i]*idf[i])/size;
+    }
+    for(int i=0; i<size; i++)
+    {
+        idf[i] /= sqrt(variance);
+    }
+    for(int i=0; i<size; i++)
+    {
+        idf[i]+= shift_parameter;
+        sign=std::signbit(idf[i])?-1:1;
+        idf[i]=fabs(idf[i]);
+        idf[i] = sign*pow(idf[i],power_parameter); //je boost un peu la variance de sorte que le mots peu sgnificatif impacte moins.
     }
     for(unsigned j=0; j<vect.size(); j++)
     {
         score[j]=tfidf_trained(vect,j,idf);
-        if(!((j+1)%10))
-        std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
+        //if(!((j+1)%10))
+        //std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
     }
 
     int max_cool = 0;
     float best_f = 0, best_score = 0;
-    for(float f=0.4;f<1.2;f+=0.001)
+    for(float f=-1;f<1;f+=0.001)
     {
         int cool = 0;
         for(unsigned int j=0;j<score.size();j++)
@@ -81,7 +98,7 @@ int main()
             max_cool = cool;
             best_f = f;
             best_score = (float)cool/(float)score.size();
-            std::cout<<"New best : "<<f<<" "<<cool<<" "<<best_score<<std::endl;
+            //std::cout<<"New best : "<<f<<" "<<cool<<" "<<best_score<<std::endl;
         }
     }
 

@@ -2,7 +2,7 @@
 #define PREPROCESSING_HPP_INCLUDED
 
 
-#define REGEX_ENABLED
+//#define REGEX_ENABLED
 
 #ifdef REGEX_ENABLED
 #include <boost/regex.hpp>

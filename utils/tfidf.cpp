@@ -63,10 +63,11 @@ float tfidf(const std::vector<std::vector<int>>& in, int comm, int word)
 
 float tfidf_trained(const std::vector<std::vector<int>>& in, int comm,const std::vector<float>& idf)
 {
+    float word_length_bonus=6;
     float tfidf=0;
     for(unsigned int i=1; i<in[comm].size(); i++)
     tfidf+=idf[in[comm][i]];
-    return tfidf/(float)in[comm].size();
+    return tfidf/(float)(in[comm].size()+word_length_bonus); //rend les commentaires plus long plus toxics.
 }
 
 bool comp(std::pair<int,float>a,std::pair<int,float>b)
