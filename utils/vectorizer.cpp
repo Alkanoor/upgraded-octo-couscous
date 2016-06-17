@@ -1,7 +1,7 @@
 #include "vectorizer.hpp"
 
 
-Vectorizer::Vectorizer(const std::vector<std::vector<std::string> >& words, bool update, bool train) :
+Vectorizer::Vectorizer(const std::vector<std::vector<std::string> >& words, bool update, bool train)
 {
 	reset_words(words, update, train);
 }
@@ -75,6 +75,7 @@ void Vectorizer::vectorize(bool train)
             vectorized[i][j] = index[word];
             j++;
         }
+		i++;
     }
 }
 
@@ -104,4 +105,3 @@ double Vectorizer::get_ratio_insults() const
 
 double Vectorizer::score(double a, double b, double c, double d)
 {return 1./((a+b+c)*(a+b+c))*std::min((a+d)*(a+d),(b+d)*(b+d));}
-
