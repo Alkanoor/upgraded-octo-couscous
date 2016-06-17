@@ -11,7 +11,7 @@
 class Vectorizer
 {
     public:
-        Vectorizer(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true, double a = 0.1, double b = 0.05);
+        Vectorizer(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
 
 		void reset_words(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
 
@@ -40,8 +40,6 @@ class Vectorizer
 		std::map<std::string,int> non_insults_counter;
 
 		int n_insults;
-
-		double a, b;
 };
 
 

@@ -13,15 +13,33 @@ int main()
     p.save_in_file("output/train_modified.txt");
 
     auto words = p.get_words();
+    auto words_before = p.get_words_before_regex();
+    auto regexed = p.get_regexed();
     Vectorizer v(words);
 
     std::cout<<v.get_ratio_insults()<<std::endl;
 
-    std::ofstream words_out("output/train_all_words.txt",std::ios::out);
+    /*std::ofstream words_out("output/train_all_words.txt",std::ios::out);
     words_out<<v.get_counter();
     for(int i=0;i<10;i++)
         words_out<<std::endl;
     words_out<<v.get_counter_different_comments();
+    words_out.close();*/
+
+    std::ofstream words_out("output/train_before_after_regexing.txt",std::ios::out);
+    for(unsigned int i=0;i<words.size();i++)
+    {
+        words_out<<"========================================================"<<std::endl;
+        for(unsigned int j=0;j<words_before[i].size();j++)
+            words_out<<words_before[i][j]<<" ";
+        words_out<<std::endl;
+        for(unsigned int j=0;j<regexed[i].size();j++)
+            words_out<<regexed[i][j].first<<";"<<regexed[i][j].second<<" ";
+        words_out<<std::endl;
+        for(unsigned int j=0;j<words[i].size();j++)
+            words_out<<words[i][j]<<" ";
+        words_out<<std::endl;
+    }
     words_out.close();
 
     std::ofstream clean_out("output/train_all_words_less.txt",std::ios::out);
@@ -36,13 +54,30 @@ int main()
     p.save_in_file("output/test_modified.txt");
 
     words = p.get_words();
+    words_before = p.get_words_before_regex();
+    regexed = p.get_regexed();
     v = Vectorizer(words,true,false);
 
-    words_out.open("output/test_all_words.txt",std::ios::out);
+    /*words_out.open("output/test_all_words.txt",std::ios::out);
     words_out<<v.get_counter();
     for(int i=0;i<10;i++)
         words_out<<std::endl;
-    words_out<<v.get_counter_different_comments();
+    words_out<<v.get_counter_different_comments();*/
+
+    words_out.open("output/test_before_after_regexing.txt",std::ios::out);
+    for(unsigned int i=0;i<words.size();i++)
+    {
+        words_out<<"========================================================"<<std::endl;
+        for(unsigned int j=0;j<words_before[i].size();j++)
+            words_out<<words_before[i][j]<<" ";
+        words_out<<std::endl;
+        for(unsigned int j=0;j<regexed[i].size();j++)
+            words_out<<regexed[i][j].first<<";"<<regexed[i][j].second<<" ";
+        words_out<<std::endl;
+        for(unsigned int j=0;j<words[i].size();j++)
+            words_out<<words[i][j]<<" ";
+        words_out<<std::endl;
+    }
 
     clean_out.open("output/test_all_words_less.txt",std::ios::out);
     print_map_sorted(clean_out,v.get_counter(),500,true);

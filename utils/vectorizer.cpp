@@ -1,9 +1,7 @@
 #include "vectorizer.hpp"
 
 
-Vectorizer::Vectorizer(const std::vector<std::vector<std::string> >& words, bool update, bool train, double a, double b) :
-	a(a),
-	b(b)
+Vectorizer::Vectorizer(const std::vector<std::vector<std::string> >& words, bool update, bool train) :
 {
 	reset_words(words, update, train);
 }

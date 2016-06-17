@@ -2,7 +2,7 @@
 #define PREPROCESSING_HPP_INCLUDED
 
 
-//#define REGEX_ENABLED
+#define REGEX_ENABLED
 
 #ifdef REGEX_ENABLED
 #include <boost/regex.hpp>
@@ -40,11 +40,15 @@ class Preprocessing
         void set_separators(const std::set<unsigned char>& sep, bool update = false);
 
         const std::vector<std::vector<std::string> >& get_words() const;
+        const std::vector<std::vector<std::string> >& get_words_before_regex() const;
+        const std::vector<std::vector<std::pair<std::string,std::string> > >& get_regexed() const;
 
     private:
         static bool initialized;
         static std::map<std::string, unsigned char, std::greater<std::string> > correspondances;
         static std::map<std::string, std::string, std::greater<std::string> > string_correspondances;
+        static std::vector<std::pair<std::string,std::string> > regex_replace;
+        static std::vector<std::pair<std::string,std::string> > cur_regexed;
 
         std::set<unsigned char> separators;
 
@@ -52,6 +56,8 @@ class Preprocessing
         std::vector<unsigned char> raw;
         std::vector<std::vector<unsigned char> > first_cut;
         std::vector<std::vector<std::string> > second_cut;
+        std::vector<std::vector<std::string> > third_cut;
+        std::vector<std::vector<std::pair<std::string,std::string> > > regex_for_lines;
 
         bool updated_data;
         void update_priv();
