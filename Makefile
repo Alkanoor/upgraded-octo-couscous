@@ -48,6 +48,9 @@ test-counts:
 test_tfidf:
 	make -C $(TESTS) test6
 
+test_crossval:
+	make -C $(TESTS) test7
+
 exec-and-redirect:
 	$(EXEC) > $(OUTPUT)/current_out.txt
 
