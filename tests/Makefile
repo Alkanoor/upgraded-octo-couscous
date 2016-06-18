@@ -24,11 +24,12 @@ TEST3 = $(OBJ_DIR)/read_csv_with_preprocessing.o $(OBJ_DIR)/util.o $(OBJ_DIR)/pr
 TEST4 = $(OBJ_DIR)/test_counts.o $(OBJ_DIR)/counts.o
 TEST5 = $(OBJ_DIR)/vectorize_test.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o
 TEST6 = $(OBJ_DIR)/test_tfidf.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o
+TEST7 = $(OBJ_DIR)/test_crossval.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o $(OBJ_DIR)/crossval.o
 
 VPATH = .:../utils
 
 
-all: test1 test2 test3 test4 test5 test6
+all: test1 test2 test3 test4 test5 test6 test7
 
 test1: createDir read-csv
 
@@ -41,6 +42,8 @@ test4: createDir test_counts
 test5: createDir vectorize_test
 
 test6: createDir test_tfidf
+
+test7: createDir test_crossval
 
 
 read-csv: $(TEST1)
@@ -64,6 +67,10 @@ vectorize_test: $(TEST5)
 	$(RELEASE_DIR)/$@
 
 test_tfidf: $(TEST6)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_crossval: $(TEST7)
 	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 

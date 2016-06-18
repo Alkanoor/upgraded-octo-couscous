@@ -14,6 +14,7 @@ int main()
     float shift_parameter=0.84;//intuitivement, cela signifie qu'on peut considérer qu'un mot est toxique à partir de ce seuil
     // avec power_parametre on étire les scores autour de shift_parameter;
     float power_parameter=1.9;//1.93 prédisait mieux sur nos données mais moins bien en submission
+    float word_length_bonus=6;
     out.open("output/output.txt",std::fstream::out|std::fstream::trunc);
     std::vector<float> idf;
     std::vector<float> score;
@@ -78,9 +79,9 @@ int main()
     }
     for(unsigned j=0; j<vect.size(); j++)
     {
-        score[j]=tfidf_trained(vect,j,idf);
-        //if(!((j+1)%10))
-        //std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
+        score[j]=tfidf_trained(vect,j,idf,word_length_bonus);
+        if(!((j+1)%10))
+        std::cout << words[j][0]<<" : "<<score[j]<<std::endl;
     }
 
     int max_cool = 0;
@@ -108,7 +109,7 @@ int main()
     std::cout << "seuil : "<<t.first<<" => score théorique :"<<t.second<<std::endl;
     for(unsigned j=0; j<vect_test.size(); j++)
     {
-        score[j]=tfidf_trained(vect_test,j,idf);
+        score[j]=tfidf_trained(vect_test,j,idf,word_length_bonus);
     }
     score.resize(vect_test.size());
 
