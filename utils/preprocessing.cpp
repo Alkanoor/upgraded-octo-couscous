@@ -9,6 +9,8 @@
 bool Preprocessing::initialized = false;
 std::map<std::string, unsigned char, std::greater<std::string> > Preprocessing::correspondances;
 std::map<std::string, std::string, std::greater<std::string> > Preprocessing::string_correspondances;
+std::vector<std::pair<std::string,std::string> > Preprocessing::regex_replace;
+std::vector<std::pair<std::string,std::string> > Preprocessing::cur_regexed;
 
 
 Preprocessing::Preprocessing(const std::string& path, bool update) :
@@ -41,6 +43,8 @@ const std::vector<std::vector<unsigned char> >& Preprocessing::first_processing(
         first_cut[i] = tmp;
 		replace_seq_by(first_cut[i], tmp, correspondances);
 		first_cut[i] = tmp;
+		replace_seq_by(first_cut[i], tmp, correspondances);
+		first_cut[i] = tmp;
 	}
 
     return first_cut;
@@ -62,159 +66,34 @@ const std::vector<std::vector<std::string> >& Preprocessing::second_processing()
 
 const std::vector<std::vector<std::string> >& Preprocessing::third_processing()
 {
+    third_cut.resize(second_cut.size());
+    regex_for_lines.resize(second_cut.size());
     for(unsigned int i=0;i<second_cut.size();i++)
+    {
+        third_cut[i].resize(second_cut[i].size());
+        cur_regexed.clear();
         for(unsigned int j=0;j<second_cut[i].size();j++)
-            second_cut[i][j] = regexing(second_cut[i][j]);
+            third_cut[i][j] = regexing(second_cut[i][j]);
+        regex_for_lines[i] = cur_regexed;
+    }
 
-    return second_cut;
+    return third_cut;
 }
 
 std::string Preprocessing::regexing(const std::string& s)
 {
-    std::string ret = s;
+    std::string ret = s, ret_bef = s;
 
     #ifdef REGEX_ENABLED
 
-    boost::regex reg("\\\"");
-    ret = boost::regex_replace(s,reg,"");
-
-    reg = boost::regex("ass.*$");
-    ret = boost::regex_replace(ret,reg,"ass");
-
-    reg = boost::regex("a\\$\\$");
-    ret = boost::regex_replace(ret,reg,"ass");
-
-    reg = boost::regex("a\\$\\$.*$");
-    ret = boost::regex_replace(ret,reg,"ass");
-
-    reg = boost::regex("a\\*\\*.*$");
-    ret = boost::regex_replace(ret,reg,"ass");
-
-    reg = boost::regex("f(\\*)");
-    ret = boost::regex_replace(ret,reg,"fuck");
-
-    //reg = boost::regex("f(\\*)*ck.*");
-    //ret = boost::regex_replace(ret,reg,"fuck");
-
-    reg = boost::regex("f.*uckin.*$");
-    ret = boost::regex_replace(ret,reg,"fuck");
-
-    reg = boost::regex("f.?.?.?.?uck.?.?.?.?.?.?.?.?.?.?you$");
-    ret = boost::regex_replace(ret,reg,"fuckyou");
-
-    reg = boost::regex("f.?.?.?.?uck.*$");
-    ret = boost::regex_replace(ret,reg,"fuck");
-
-    reg = boost::regex("(\\*)+");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("\\$[0-9]+k?");
-    ret = boost::regex_replace(ret,reg,"dollars");
-
-    reg = boost::regex("\\$stupid");
-    ret = boost::regex_replace(ret,reg,"stupid");
-
-    reg = boost::regex("&amp");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("&nbsp");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("\\\\x.{2}");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("^[0-9]+k.*$");
-    ret = boost::regex_replace(ret,reg,"dollars");
-
-    reg = boost::regex("^[0-9]+th.*$");
-    ret = boost::regex_replace(ret,reg,"date");
-
-    reg = boost::regex("^[0-9]+mn.*$");
-    ret = boost::regex_replace(ret,reg,"time");
-
-    reg = boost::regex("^[0-9]{4}[0-9]*[^0-9]+$");
-    ret = boost::regex_replace(ret,reg,"number");
-
-    reg = boost::regex("^[0-9]{4}");
-    ret = boost::regex_replace(ret,reg,"year");
-
-    reg = boost::regex("^[0-9]{2}.*$");
-    ret = boost::regex_replace(ret,reg,"number");
-
-    reg = boost::regex("^\\:.*$");
-    ret = boost::regex_replace(ret,reg,"smiley");
-
-    reg = boost::regex("<3");
-    ret = boost::regex_replace(ret,reg,"love");
-
-    reg = boost::regex("<[^>]*>");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("<[^>]*>");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex(">");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("<");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("^@.*$");
-    ret = boost::regex_replace(ret,reg,"pseudo");
-
-    reg = boost::regex("@");
-    ret = boost::regex_replace(ret,reg,"a");
-
-    reg = boost::regex("\\[[^\\]]\\]");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("\\\\tick");
-    ret = boost::regex_replace(ret,reg,"tick");
-
-    reg = boost::regex("\\\\t");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("\\\\u[0-9a-f]{4}");
-    ret = boost::regex_replace(ret,reg,"");
-
-    reg = boost::regex("extra*$");
-    ret = boost::regex_replace(ret,reg,"extra");
-
-    reg = boost::regex("extre*$");
-    ret = boost::regex_replace(ret,reg,"extreme");
-
-    reg = boost::regex("face.*.*.*$");
-    ret = boost::regex_replace(ret,reg,"face");
-
-    reg = boost::regex("fag.*$");
-    ret = boost::regex_replace(ret,reg,"fag");
-
-    reg = boost::regex("fail.*$");
-    ret = boost::regex_replace(ret,reg,"fail");
-
-    reg = boost::regex("faith.*$");
-    ret = boost::regex_replace(ret,reg,"faith");
-
-    reg = boost::regex("fak.*$");
-    ret = boost::regex_replace(ret,reg,"fak");
-
-    reg = boost::regex("fall.*$");
-    ret = boost::regex_replace(ret,reg,"fall");
-
-    reg = boost::regex("fals.*$");
-    ret = boost::regex_replace(ret,reg,"fals");
-
-    reg = boost::regex("fanatic.*$");
-    ret = boost::regex_replace(ret,reg,"fnatic");
-
-    reg = boost::regex("fantas.*$");
-    ret = boost::regex_replace(ret,reg,"fntasie");
-
-    reg = boost::regex("fan.*$");
-    ret = boost::regex_replace(ret,reg,"fan");
-
-    reg = boost::regex("stalk.*$");
-    ret = boost::regex_replace(ret,reg,"stalk");
+    for(auto r : regex_replace)
+    {
+        boost::regex reg(r.first);
+        ret = boost::regex_replace(ret_bef,reg,r.second);
+        if(ret!=ret_bef)
+            cur_regexed.push_back(std::pair<std::string,std::string>(r.first,s));
+        ret_bef = ret;
+    }
 
     #endif
 
@@ -232,19 +111,19 @@ void Preprocessing::update_case()
 
 void Preprocessing::rescale_ascii()
 {
-    for(unsigned int i=0;i<second_cut.size();i++)
-        for(unsigned int j=0;j<second_cut[i].size();)
+    for(unsigned int i=0;i<third_cut.size();i++)
+        for(unsigned int j=0;j<third_cut[i].size();)
         {
             bool del = true;
-            for(unsigned int k=0;k<second_cut[i][j].size();k++)
-                if(second_cut[i][j][k]>='A'&&second_cut[i][j][k]<='Z')
+            for(unsigned int k=0;k<third_cut[i][j].size();k++)
+                if(third_cut[i][j][k]>='A'&&third_cut[i][j][k]<='Z')
                     del = false;
-                else if(second_cut[i][j][k]>='a'&&second_cut[i][j][k]<='z')
+                else if(third_cut[i][j][k]>='a'&&third_cut[i][j][k]<='z')
                     del = false;
-                else if(second_cut[i][j][k]>='0'&&second_cut[i][j][k]<='9')
+                else if(third_cut[i][j][k]>='0'&&third_cut[i][j][k]<='9')
                     del = false;
             if(del)
-                second_cut[i].erase(second_cut[i].begin()+j);
+                third_cut[i].erase(third_cut[i].begin()+j);
             else
                 j++;
         }
@@ -275,13 +154,18 @@ void Preprocessing::set_separators(const std::set<unsigned char>& sep, bool upda
 }
 
 const std::vector<std::vector<std::string> >& Preprocessing::get_words() const
+{return third_cut;}
+
+const std::vector<std::vector<std::string> >& Preprocessing::get_words_before_regex() const
 {return second_cut;}
+
+const std::vector<std::vector<std::pair<std::string,std::string> > >& Preprocessing::get_regexed() const
+{return regex_for_lines;}
 
 void Preprocessing::update_priv()
 {
     first_processing();
     second_processing();
-    rescale_ascii();
     update_case();
     third_processing();
     rescale_ascii();
@@ -384,7 +268,53 @@ void Preprocessing::init()
     	correspondances["\\U0001f48b"]=' ';
     	correspondances["\\\\"]=' ';
     	correspondances["\\ "]=' ';
+    	correspondances["\"\""]=' ';
     	correspondances["\""]=' ';
+    	correspondances["&nbsp"]=' ';
+    	correspondances["&amp"]=' ';
+
+        regex_replace.push_back(std::pair<std::string,std::string>("\\\"",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("ass.*$","ass"));
+        regex_replace.push_back(std::pair<std::string,std::string>("a\\$\\$","ass"));
+        regex_replace.push_back(std::pair<std::string,std::string>("a\\$\\$.*$","ass"));
+        regex_replace.push_back(std::pair<std::string,std::string>("a\\*\\*.*$","ass"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^.*f(\\*).*$","fuck"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^.*f.*uckin.*$","fuck"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^.*f.?.?.?.?uck.?.?.?.?.?.?.?.?.?.?you$","fuckyou"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^.*f.?.?.?.?uck.*$","fuck"));
+        regex_replace.push_back(std::pair<std::string,std::string>("(\\*)+",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("^(\\*)+[^\\*]","stars"));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\$[0-9]+k?","dollars"));
+        regex_replace.push_back(std::pair<std::string,std::string>("(\\$|s)tupid","stupid"));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\\\x.{2}",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+k.*$","dollars"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+th.*$","date"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+mn.*$","time"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{4}[0-9]*[^0-9]+$","number"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{4}","year"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{2}.*$","number"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^\\:.*$","smiley"));
+        regex_replace.push_back(std::pair<std::string,std::string>("<3","love"));
+        regex_replace.push_back(std::pair<std::string,std::string>("<[^>]*>",""));
+        regex_replace.push_back(std::pair<std::string,std::string>(">",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("<",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("^@.*$","pseudo"));
+        regex_replace.push_back(std::pair<std::string,std::string>("@","a"));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\[[^\\]]\\]$",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\\\tick","tick"));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\\\t",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("\\\\u[0-9a-f]{4}",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("extra.*$","extra"));
+        regex_replace.push_back(std::pair<std::string,std::string>("extre.*$","extreme"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fag.*$","fag"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fail.*$","fail"));
+        regex_replace.push_back(std::pair<std::string,std::string>("faith.*$","faith"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fak.*$","fak"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fall.*$","fall"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fals.*$","fals"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fanatic.*$","fnatic"));
+        regex_replace.push_back(std::pair<std::string,std::string>("fantas.*$","fntasie"));
+        regex_replace.push_back(std::pair<std::string,std::string>("stalk.*$","stalk"));
 
         initialized = true;
     }

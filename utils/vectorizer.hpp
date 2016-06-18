@@ -4,23 +4,27 @@
 
 #include "preprocessing.hpp"
 
+#include <iostream>
 #include <cmath>
 
 
 class Vectorizer
 {
     public:
-        Vectorizer(const std::vector<std::vector<std::string> >& words, bool update = true, double a = 0.1, double b = 0.05);
+        Vectorizer(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
 
-		void reset_words(const std::vector<std::vector<std::string> >& words, bool update = true);
+		void reset_words(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
 
-        void vectorize();
+        void vectorize(bool train = true);
 
         const std::vector<std::vector<int> >& get_vectorized() const;
-        const std::map<std::string,int>& get_dictionary() const;
+        const std::map<std::string,int>& get_dictionary() const;                //returns correspondances string/index
+        const std::map<int,std::string>& get_index_to_words() const;            //returns correspondances index/string
+        const std::map<std::string,int>& get_counter() const;                   //returns counts of words in all the document
+        const std::map<std::string,int>& get_counter_different_comments() const;//returns counts of 1 occurence per comment in all the document
 		const std::map<std::string,int>& get_insult_words() const;
 		const std::map<std::string,int>& get_non_insult_words() const;
-		const std::map<std::string,double>& get_scores() const;
+
 		double get_ratio_insults() const;
 
 		static double score(double a, double b, double c, double d);
@@ -28,15 +32,14 @@ class Vectorizer
     private:
         std::vector<std::vector<std::string> > words;
         std::vector<std::vector<int> > vectorized;
+        std::map<std::string,int> index;
+        std::map<int,std::string> index_to_words;
         std::map<std::string,int> counter;
+        std::map<std::string,int> counter_different_comments;
 		std::map<std::string,int> insults_counter;
 		std::map<std::string,int> non_insults_counter;
-		std::map<std::string,double> scores;
-		std::map<std::string,double> normalized_for_insult_proba;
 
 		int n_insults;
-
-		double a, b;
 };
 
 

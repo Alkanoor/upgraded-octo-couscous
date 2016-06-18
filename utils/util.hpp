@@ -68,17 +68,35 @@ std::map<U,std::vector<T> > reverse_map(const std::map<T,U>& m)
     return ret;
 }
 
+//pour changer l'ordre des éléments dans une map
+template <typename T, typename U>
+std::map<T,U> oppose_in_map(const std::map<T,U>& v)
+{
+    std::map<T,U> cpy;
+    for(auto it=v.begin(); it!=v.end(); it++)
+        cpy[it->first] = -it->second;
+
+	return cpy;
+}
+
 //pour afficher facilement des map de manière triée
 template <typename T, typename U>
-std::ostream& print_map_sorted(std::ostream& ofs, const std::map<T,U>& v, int number_elements = -1)
+std::ostream& print_map_sorted(std::ostream& ofs, const std::map<T,U>& v, int number_elements = -1, bool oppose = false)
 {
-    std::map<U,std::vector<T> > reversed_map = reverse_map(v);
+    std::map<U,std::vector<T> > reversed_map;
+    if(oppose)
+        reversed_map = reverse_map(oppose_in_map(v));
+    else
+        reversed_map = reverse_map(v);
     std::map<T,U> sorted_map;
     int i=0;
     for(auto it=reversed_map.begin(); it!=reversed_map.end() && (i<number_elements||number_elements<0); it++)
     {
         for(auto j : it->second)
-            sorted_map[j] = it->first;
+            if(oppose)
+                sorted_map[j] = -it->first;
+            else
+                sorted_map[j] = it->first;
         i += it->second.size();
     }
 	ofs<<sorted_map;
