@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "vectorizer.hpp"
 
 
@@ -102,6 +104,52 @@ const std::map<std::string,int>& Vectorizer::get_non_insult_words() const
 
 double Vectorizer::get_ratio_insults() const
 {return (double)n_insults/(double)words.size();}
+
+void Vectorizer::save_to_file(const std::string& path)
+{
+    save(vectorized,path);
+}
+
+void Vectorizer::load_from_file(const std::string& path)
+{
+    vectorized = load(path);
+}
+
+void Vectorizer::save(const std::vector<std::vector<int> >& vectorized, const std::string& path)
+{
+    std::ofstream ofs(path.c_str(),std::ios::out);
+    for(unsigned int i=0;i<vectorized.size();i++)
+    {
+        ofs<<vectorized[i].size()<<" ";
+        for(unsigned int j=0;j<vectorized[i].size();j++)
+            ofs<<vectorized[i][j]<<" ";
+        ofs<<std::endl;
+    }
+}
+
+std::vector<std::vector<int> > Vectorizer::load(const std::string& path)
+{
+    std::vector<std::vector<int> > ret;
+
+    std::ifstream ifs(path.c_str(),std::ios::in);
+    int tmp;
+    int cur_size, counter = -1;
+    while(ifs>>tmp)
+    {
+        if(counter<0)
+        {
+            ret.push_back(std::vector<int>(tmp,0));
+            cur_size = tmp-1;
+            counter = tmp-1;
+        }
+        else
+        {
+            ret[ret.size()-1][cur_size-counter] = tmp;
+            counter--;
+        }
+    }
+    return ret;
+}
 
 double Vectorizer::score(double a, double b, double c, double d)
 {return 1./((a+b+c)*(a+b+c))*std::min((a+d)*(a+d),(b+d)*(b+d));}

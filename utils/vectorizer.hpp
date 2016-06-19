@@ -11,7 +11,7 @@
 class Vectorizer
 {
     public:
-        Vectorizer(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
+        Vectorizer(const std::vector<std::vector<std::string> >& words = std::vector<std::vector<std::string> >(), bool update = true, bool train = true);
 
 		void reset_words(const std::vector<std::vector<std::string> >& words, bool update = true, bool train = true);
 
@@ -27,6 +27,11 @@ class Vectorizer
 
 		double get_ratio_insults() const;
 
+		void save_to_file(const std::string& path);
+		void load_from_file(const std::string& path);
+
+        static void save(const std::vector<std::vector<int> >& vectorized, const std::string& path);
+        static std::vector<std::vector<int> > load(const std::string& path);
 		static double score(double a, double b, double c, double d);
 
     private:

@@ -1,5 +1,5 @@
 USE_BOOST_CUSTOM_WINDOWS = 0
-USE_BOOST_LINUX = 1
+USE_BOOST_LINUX = 0
 
 OBJ_DIR = obj
 RELEASE_DIR = bin
@@ -23,12 +23,15 @@ TEST2 = $(OBJ_DIR)/replace_test.o $(OBJ_DIR)/util.o
 TEST3 = $(OBJ_DIR)/read_csv_with_preprocessing.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/counts.o
 TEST4 = $(OBJ_DIR)/test_counts.o $(OBJ_DIR)/counts.o
 TEST5 = $(OBJ_DIR)/vectorize_test.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o
-TEST6 = $(OBJ_DIR)/test_tfidf.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o
+TEST6 = $(OBJ_DIR)/test_tfidf.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o $(OBJ_DIR)/comparaison_train_test.o
+TEST7 = $(OBJ_DIR)/distances_for_lemmatisation_test.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/comparaison_train_test.o
+TEST8 = $(OBJ_DIR)/test_all_cases.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/comparaison_train_test.o
+TEST9 = $(OBJ_DIR)/test_learner.o $(OBJ_DIR)/util.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/learner.o
 
 VPATH = .:../utils
 
 
-all: test1 test2 test3 test4 test5 test6
+all: test1 test2 test3 test4 test5 test6 test7 test8 test9
 
 test1: createDir read-csv
 
@@ -41,6 +44,12 @@ test4: createDir test_counts
 test5: createDir vectorize_test
 
 test6: createDir test_tfidf
+
+test7: createDir distances_for_lemmatisation_test
+
+test8: createDir test_all_cases
+
+test9: createDir test_learner
 
 
 read-csv: $(TEST1)
@@ -64,6 +73,18 @@ vectorize_test: $(TEST5)
 	$(RELEASE_DIR)/$@
 
 test_tfidf: $(TEST6)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+distances_for_lemmatisation_test: $(TEST7)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_all_cases: $(TEST8)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_learner: $(TEST9)
 	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 

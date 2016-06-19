@@ -16,7 +16,7 @@ std::vector<std::pair<std::string,std::string> > Preprocessing::cur_regexed;
 Preprocessing::Preprocessing(const std::string& path, bool update) :
     updated_data(false)
 {
-    separators = {'|','#',' ','/','-','\''};
+    separators = {'|','#',' ','/','-','\'','_'};
     init();
     reset_path(path,update);
 }
@@ -26,7 +26,11 @@ void Preprocessing::reset_path(const std::string& path, bool update)
     updated_data = false;
     path_to_data = path;
 
-    read(path,raw);
+    if(!read(path,raw))
+    {
+        std::cerr<<"Unexisting file !"<<std::endl;
+        return;
+    }
 
     if(update)
         update_priv();
@@ -204,6 +208,7 @@ void Preprocessing::init()
         string_correspondances[";"] = " ; ";
         string_correspondances["("] = " ( ";
         string_correspondances[")"] = " ) ";
+        string_correspondances["\\n"] = " ";
         correspondances[", \"\"\""] = '|';
     	correspondances["\"\"\""] = '#';
     	correspondances["\\\\xc2"]=' ';
@@ -272,6 +277,7 @@ void Preprocessing::init()
     	correspondances["\""]=' ';
     	correspondances["&nbsp"]=' ';
     	correspondances["&amp"]=' ';
+    	correspondances["="]=' ';
 
         regex_replace.push_back(std::pair<std::string,std::string>("\\\"",""));
         regex_replace.push_back(std::pair<std::string,std::string>("ass.*$","ass"));
@@ -290,7 +296,7 @@ void Preprocessing::init()
         regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+k.*$","dollars"));
         regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+th.*$","date"));
         regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]+mn.*$","time"));
-        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{4}[0-9]*[^0-9]+$","number"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{5}.*$","number"));
         regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{4}","year"));
         regex_replace.push_back(std::pair<std::string,std::string>("^[0-9]{2}.*$","number"));
         regex_replace.push_back(std::pair<std::string,std::string>("^\\:.*$","smiley"));
@@ -315,6 +321,10 @@ void Preprocessing::init()
         regex_replace.push_back(std::pair<std::string,std::string>("fanatic.*$","fnatic"));
         regex_replace.push_back(std::pair<std::string,std::string>("fantas.*$","fntasie"));
         regex_replace.push_back(std::pair<std::string,std::string>("stalk.*$","stalk"));
+        regex_replace.push_back(std::pair<std::string,std::string>("^.*http.*$","HTTP_ref"));
+        regex_replace.push_back(std::pair<std::string,std::string>("x[0-9]{2}",""));
+        regex_replace.push_back(std::pair<std::string,std::string>("^x[0-9a-f]{2}$",""));
+        regex_replace.push_back(std::pair<std::string,std::string>(":",""));
 
         initialized = true;
     }
