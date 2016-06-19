@@ -8,45 +8,41 @@
 class Comparaison_Train_Test
 {
     public:
-        Comparaison_Train_Test(const std::string& train, const std::string& test);
-		
-		std::map<std::string,std::pair<std::string,float> > minimum_distances_to_unknown words() const;
+        Comparaison_Train_Test();
+        Comparaison_Train_Test(const std::string& dict_path);
+        Comparaison_Train_Test(const std::string& train_path, const std::string& test_path);
+        Comparaison_Train_Test(const std::vector<std::vector<std::string> >& v1, const std::vector<std::vector<std::string> >& v2);
+
+        void load_dictionary(const std::string& dict_path);
+        void load_dictionary(const std::map<std::string,int>& dict);
+        void save_dictionary(const std::string& path);
+
+        void load_train(const std::vector<std::vector<std::string> >& train);
+        void load_test(const std::vector<std::vector<std::string> >& test);
+
+		std::vector<std::vector<int> > train() const;
+		std::vector<std::vector<int> > test() const;
+		const std::map<std::string,int>& get_dictionary() const;
+
+		static int is_begin_of(const std::string& s1, const std::string& s2, int min_size);
+        static int contains(const std::string& s1, const std::string& s2, int min_size, std::string& root);
+        static int contains_subword(const std::string& s1, const std::string& s2, int min_size, std::string& root);
+		static float distance(const std::string& s1, const std::string& s2, std::string& root);
 
     private:
-        static bool initialized;
-        static std::map<std::string, unsigned char, std::greater<std::string> > correspondances;
-        static std::map<std::string, std::string, std::greater<std::string> > string_correspondances;
-        static std::vector<std::pair<std::string,std::string> > regex_replace;
-        static std::vector<std::pair<std::string,std::string> > cur_regexed;
+        std::vector<std::vector<std::string> > train_words;
+        std::vector<std::vector<std::string> > test_words;
+        std::vector<std::vector<int> > train_vec;
+		std::vector<std::vector<int> > test_vec;
+		std::map<std::string,int> common_dictionary;
+		std::map<int,std::string> common_conversed_dictionary;
 
-        std::set<unsigned char> separators;
+		void update_train();
+		void update_test();
 
-        std::string path_to_data;
-        std::vector<unsigned char> raw;
-        std::vector<std::vector<unsigned char> > first_cut;
-        std::vector<std::vector<std::string> > second_cut;
-        std::vector<std::vector<std::string> > third_cut;
-        std::vector<std::vector<std::pair<std::string,std::string> > > regex_for_lines;
-
-        bool updated_data;
-        void update_priv();
-
-        static void init();
+		void update();
+		void update_links(const std::vector<std::array<std::string,3> >& links);
 };
-
-
-template <typename T>
-std::vector<T> Preprocessing::apply(const std::function<T(const std::vector<std::string>&)>& func)
-{
-    if(!updated_data)
-        update_priv();
-
-    std::vector<T> ret(second_cut.size());
-    for(unsigned int i=0;i<second_cut.size();i++)
-        ret[i] = func(second_cut[i]);
-
-    return ret;
-}
 
 
 #endif

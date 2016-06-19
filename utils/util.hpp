@@ -50,6 +50,15 @@ std::ostream& operator<<(std::ostream& ofs, const std::vector<T>& v)
 	return ofs;
 }
 
+//pour afficher facilement des map de pair
+template <typename T, typename U, typename V>
+std::ostream& operator<<(std::ostream& ofs, const std::map<T,std::pair<U,V> >& v)
+{
+	for(auto it=v.begin(); it!=v.end(); it++)
+        ofs<<it->first<<" : ("<<it->second.first<<" "<<it->second.second<<")"<<std::endl;
+	return ofs;
+}
+
 //pour afficher facilement des map
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& ofs, const std::map<T,U>& v)
