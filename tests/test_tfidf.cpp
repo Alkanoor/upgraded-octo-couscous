@@ -11,10 +11,10 @@ int main()
 {
     std::fstream out;
     float sign;
-    float shift_parameter=0.84;//intuitivement, cela signifie qu'on peut considérer qu'un mot est toxique à partir de ce seuil
+    float shift_parameter=0.8;//intuitivement, cela signifie qu'on peut considérer qu'un mot est toxique à partir de ce seuil
     // avec power_parametre on étire les scores autour de shift_parameter;
-    float power_parameter=1.9;//1.93 prédisait mieux sur nos données mais moins bien en submission
-    float word_length_bonus=6;
+    float power_parameter=1.91;//1.93 prédisait mieux sur nos données mais moins bien en submission
+    float word_length_bonus=5.8;
     out.open("output/output.txt",std::fstream::out|std::fstream::trunc);
     std::vector<float> idf;
     std::vector<float> score;
@@ -48,12 +48,7 @@ int main()
         vect_test.push_back(tmp);
     }
 
-    for(int i=0; i<size; i++)
-    {
-        idf[i] = idf_train(vect,i);
-        if(!((i+1)%1000))
-            std::cout << (float)i/(float)size<<'%'<<std::endl;
-    }
+    idf = idf_train(vect,size);
     for(int i=0; i<size; i++)
     {
         meanidf += idf[i]/size;

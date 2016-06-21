@@ -51,6 +51,13 @@ test_tfidf:
 test_crossval:
 	make -C $(TESTS) test7
 
+test_grid:
+	make -C $(TESTS) test11
+
+test_perceptron:
+	make -C $(TESTS) test12
+
+
 exec-and-redirect:
 	$(EXEC) > $(OUTPUT)/current_out.txt
 

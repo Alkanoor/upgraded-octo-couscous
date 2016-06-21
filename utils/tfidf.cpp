@@ -6,10 +6,12 @@
 
 
 
-float idf_train(const std::vector<std::vector<int>>& in, int word)
+std::vector<float> idf_train(const std::vector<std::vector<int>>& in,int dico_size)
 {
-    int d0=1;
-    int d1=1;
+    std::vector<float> idf;
+    idf.resize(dico_size);
+    std::vector<int> d0(dico_size,1);
+    std::vector<int> d1(dico_size,1);
     int ones=1,zeros=1;
     for (unsigned int i = 0; i<in.size(); i++)
     {
@@ -19,15 +21,17 @@ float idf_train(const std::vector<std::vector<int>>& in, int word)
         ones++;
         for(unsigned int j = 0; j<in[i].size(); j++)
         {
-            if(in[i][j]==word){
-                if(in[i][0]==1)
-                d0++;
-                else
-                d1++;
-            }
+            if(in[i][0]==1)
+            d0[in[i][j]]++;
+            else
+            d1[in[i][j]]++;
         }
     }
-    return log((float)(d1*zeros)/(float)(d0*ones));
+    for(int j = 0; j<dico_size; j++)
+    {
+        idf[j]=log((float)(d1[j]*zeros)/(float)(d0[j]*ones));
+    }
+    return idf;
 }
 
 float tfidf_trained(const std::vector<std::vector<int>>& in, int comm,const std::vector<float>& idf,float word_length_bonus)

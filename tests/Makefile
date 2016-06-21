@@ -6,7 +6,7 @@ RELEASE_DIR = bin
 OUTPUT_DIR = output
 
 CC = g++
-CFLAGS = -Wall -Werror -O1 -std=c++11 -I"C:\Program Files (x86)\CodeBlocks\boost_1_59_0" -g
+CFLAGS = -Wall -O1 -std=c++11 -I"C:\Program Files (x86)\CodeBlocks\boost_1_59_0" -g
 
 ifeq ($(strip $(USE_BOOST_LINUX)),1)
 LDFLAGS = -std=c++11 -L"C:\Boost\lib" -lboost_regex -g
@@ -28,6 +28,8 @@ TEST7 = $(OBJ_DIR)/test_crossval.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o 
 TEST8 = $(OBJ_DIR)/distances_for_lemmatisation_test.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/comparaison_train_test.o
 TEST9 = $(OBJ_DIR)/test_all_cases.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/comparaison_train_test.o
 TEST10 = $(OBJ_DIR)/test_learner.o $(OBJ_DIR)/util.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/learner.o
+TEST11 = $(OBJ_DIR)/gridsearch.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o $(OBJ_DIR)/crossval.o
+TEST12 = $(OBJ_DIR)/perceptron.o $(OBJ_DIR)/util.o $(OBJ_DIR)/preprocessing.o $(OBJ_DIR)/vectorizer.o $(OBJ_DIR)/tfidf.o $(OBJ_DIR)/crossval.o
 
 VPATH = .:../utils
 
@@ -54,6 +56,10 @@ test8: createDir distances_for_lemmatisation_test
 test9: createDir test_all_cases
 
 test10: createDir test_learner
+
+test11: createDir test_grid
+
+test12: createDir test_perceptron
 
 
 read-csv: $(TEST1)
@@ -96,6 +102,13 @@ test_learner: $(TEST10)
 	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
 	$(RELEASE_DIR)/$@
 
+test_grid: $(TEST11)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
+
+test_perceptron: $(TEST12)
+	$(CC) -o $(RELEASE_DIR)/$@ $^ $(LDFLAGS)
+	$(RELEASE_DIR)/$@
 
 $(OBJ_DIR)/%.o: %.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
