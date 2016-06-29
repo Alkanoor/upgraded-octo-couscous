@@ -37,7 +37,7 @@ int main()
     std::fstream out;
     out.open("output/output.txt",std::fstream::out|std::fstream::trunc);
     std::vector<float> score;
-    float word_length_bonus=-1,err;
+    float word_length_bonus=6,err;
     int size;
     Preprocessing p("../data/train.csv");
     p.save_in_file("output/modified.txt");
@@ -50,7 +50,7 @@ int main()
     std::vector<std::vector<int>> vect= v.get_vectorized();
     auto dico = v.get_dictionary();
     size=dico.size();
-    std::vector<float> idf(size,0);
+    std::vector<float> idf;
     std::vector<float> idf_learn,best_idf;
     std::vector<int> test_presence(size,0);
     score.resize(vect.size());
@@ -71,26 +71,36 @@ int main()
         vect_test.push_back(tmp);
     }
     for(int j=0; j<size;j++)
-    if(test_presence[j]<10)
+    if(test_presence[j]<2)
     test_presence[j]=0;
     else
     test_presence[j]=1;
     int max_iter=200; //nombre maximum d'itération sans changer de score.
-    for(int i=0; i<max_iter||best_score<0.99; i++)
+    idf=idf_train(vect,size);
+    normalize(idf);
+    for(int i=0; i<size; i++)
+    {
+        idf[i]+= 0.84;
+        float sign=std::signbit(idf[i])?-1:1;
+        idf[i]=fabs(idf[i]);
+        idf[i] = sign*pow(idf[i],1.9); //je boost un peu la variance de sorte que le mots peu sgnificatif impacte moins.
+    }
+    normalize(idf);
+    for(int i=0; i<max_iter&&perceptron_score<0.9; i++)
     {
         idf_learn=idf;
         for(unsigned int j=0; j<vect.size();j++)
         {
             score[j]=tfidf_trained(vect,j,idf,word_length_bonus);
-            if(vect[j][0]==1 && score[j]>-0.1)
+            if(vect[j][0]==1 && score[j]>0.5)
             {
-                err=(-0.1-score[j])/(float)vect[j].size();
+                err=(0.5-score[j])/(float)vect[j].size();
                 for(unsigned int k=1; k<vect[j].size(); k++)
                 idf_learn[vect[j][k]]+=0.01*err/(1-best_score);
             }
-            else if(vect[j][0]!=1 && score[j]<0.1)
+            else if(vect[j][0]!=1 && score[j]<0.7)
             {
-                err=(0.1-score[j])/(float)vect[j].size();
+                err=(0.7-score[j])/(float)vect[j].size();
                 for(unsigned int k=1; k<vect[j].size(); k++)
                 idf_learn[vect[j][k]]+=0.01*err/(1-best_score);
             }
