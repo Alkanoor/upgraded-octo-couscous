@@ -1,0 +1,4 @@
+This file is a sample input of what could be used :
+rons,er
+rez,er
+etc ... (file which could be used in a test for example to indicate how to replace suffixes of words)
